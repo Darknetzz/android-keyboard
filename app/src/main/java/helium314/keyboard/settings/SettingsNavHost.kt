@@ -30,6 +30,7 @@ import helium314.keyboard.settings.screens.PersonalDictionaryScreen
 import helium314.keyboard.settings.screens.PreferencesScreen
 import helium314.keyboard.settings.screens.SecondaryLayoutScreen
 import helium314.keyboard.settings.screens.SubtypeScreen
+import helium314.keyboard.settings.screens.TestKeyboardScreen
 import helium314.keyboard.settings.screens.TextCorrectionScreen
 import helium314.keyboard.settings.screens.ToolbarScreen
 import helium314.keyboard.settings.screens.gesturedata.GestureDataScreen
@@ -78,8 +79,12 @@ fun SettingsNavHost(
                 onClickLanguage = { navController.navigate(SettingsDestination.Languages) },
                 onClickLayouts = { navController.navigate(SettingsDestination.Layouts) },
                 onClickDictionaries = { navController.navigate(SettingsDestination.Dictionaries) },
+                onClickTest = { navController.navigate(SettingsDestination.TestKeyboard) },
                 onClickBack = ::goBack,
             )
+        }
+        composable(SettingsDestination.TestKeyboard) {
+            TestKeyboardScreen(onClickBack = ::goBack)
         }
         composable(SettingsDestination.About) {
             AboutScreen(onClickBack = ::goBack)
@@ -155,6 +160,7 @@ object SettingsDestination {
     const val DataReview = "data_review" // remove when data gathering phase is done (end of 2026 latest)
     const val Advanced = "advanced"
     const val Debug = "debug"
+    const val TestKeyboard = "test_keyboard"
     const val Appearance = "appearance"
     const val Colors = "colors/"
     const val ColorsNight = "colors_night/"

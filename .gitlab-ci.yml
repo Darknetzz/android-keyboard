@@ -1,0 +1,47 @@
+# Builds a debug-signed APK on every push; keeps it as a downloadable artifact.
+image: eclipse-temurin:21-jdk
+
+stages:
+  - check
+  - build
+
+variables:
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle-home"
+  ANDROID_HOME: "/opt/android-sdk"
+  ANDROID_SDK_ROOT: "/opt/android-sdk"
+  # Android command-line tools; bump when a newer revision is wanted
+  CMDLINE_TOOLS_ZIP: "commandlinetools-linux-13114758_latest.zip"
+
+cache:
+  key: gradle
+  paths:
+    - .gradle-home/caches
+    - .gradle-home/wrapper
+
+privacy-check:
+  stage: check
+  image: alpine:latest
+  script:
+    - sh tools/privacy-check.sh
+
+build-apk:
+  stage: build
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq unzip curl >/dev/null
+    - mkdir -p "$ANDROID_HOME/cmdline-tools"
+    - curl -sSfL -o /tmp/tools.zip "https://dl.google.com/android/repository/$CMDLINE_TOOLS_ZIP"
+    - unzip -q /tmp/tools.zip -d "$ANDROID_HOME/cmdline-tools"
+    - mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+    - yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null
+    - echo "sdk.dir=$ANDROID_HOME" > local.properties
+  script:
+    # same SDK/NDK versions as app/build.gradle.kts; AGP fetches the matching build-tools
+    - NDK=$(sed -n 's/.*ndkVersion = "\(.*\)".*/\1/p' app/build.gradle.kts)
+    - SDK=$(sed -n 's/.*compileSdk = \([0-9]*\).*/\1/p' app/build.gradle.kts)
+    - "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-$SDK" "ndk;$NDK" >/dev/null
+    - ./gradlew --no-daemon assembleDebugNoMinify
+  artifacts:
+    name: "keyboard-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - app/build/outputs/apk/debugNoMinify/*.apk
+    expire_in: 30 days

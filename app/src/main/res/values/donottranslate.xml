@@ -74,4 +74,10 @@
     <!-- App slogan-->
     <string name="app_slogan" translatable="false">100% FOSS keyboard, based on AOSP.</string>
 
+    <string name="settings_screen_test_keyboard" translatable="false">Test keyboard</string>
+    <string name="test_keyboard_hint" translatable="false">Type here to try the keyboard: languages, emoji, themes and autofill.</string>
+    <string name="test_keyboard_text" translatable="false">Text</string>
+    <string name="test_keyboard_email" translatable="false">Email</string>
+    <string name="test_keyboard_number" translatable="false">Number</string>
+    <string name="test_keyboard_password" translatable="false">Password</string>
 </resources>
