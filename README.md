@@ -1,4 +1,7 @@
 # HeliBoard
+
+<p align="center"><img src="docs/images/banner-gradient.png" alt="android-keyboard" width="720"></p>
+
 HeliBoard is a privacy-conscious and customizable open-source keyboard, based on AOSP / OpenBoard.
 Does not use internet permission, and thus is 100% offline.
 
